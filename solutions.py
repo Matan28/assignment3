@@ -18,7 +18,7 @@ class Collection(object):
         take the last element of the iterable and return it
         :return: the last value as list
         """
-        return self.iterable[len(self.iterable)-1]
+        return self.iterable[-1]
 
     def take(self, amount):
         """
@@ -31,21 +31,19 @@ class Collection(object):
 
     def append(self, *elements):
         """
-
-        :param elements: Add elements to the end of the iterable
-        :return: New collection with all elements (old and new)
+        add new element to the end of the iterable if the elements are not None or Dict
+        :param elements: new element to add in the end
+        :return: New collection with the new elements in the end.
         """
-        elements = type(self.iterable)(elements)
-        return None if type(iterable) in (dict, None) else Collection((self.iterable + elements))
+        return None if type(elements) in (dict, None) else Collection((self.iterable + list(elements)))
 
     def prepend(self, *elements):
         """
-
-        :param elements: Add elements to the beginning of the iterable
-        :return: New collection
+        add new element to the head of the iterable if the elements are not None or Dict
+        :param elements: new element to add in the beginning of the iterable
+        :return: New collection with the elements in the biginning of the iterable
         """
-        elements = type(self.iterable)(elements)
-        return None if type(iterable) in (dict, None) else Collection((elements + self.iterable))
+        return None if type(elements) in (dict, None) else Collection((list(elements) + self.iterable))
 
     def filter(self, *callbacks):
         for item in callbacks:
