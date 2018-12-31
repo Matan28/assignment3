@@ -18,7 +18,7 @@ class Collection(object):
         take the last element of the iterable and return it
         :return: the last value as list
         """
-        return self.iterable[len(self.iterable - 1)]
+        return self.iterable[len(self.iterable)-1]
 
     def take(self, amount):
         """
