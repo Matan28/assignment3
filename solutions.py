@@ -4,7 +4,7 @@ class Collection(object):
         constructor for collection class convert the iterable to tuple (immutable) so we can work on it
         :param iterable: Can be any iterable except dict
         """
-        self.iterable = None if type(iterable) in (dict, None) else list(iterable)
+        self.iterable = None if type(iterable) in (None, dict) else list(iterable)
 
     def first(self):
         """
@@ -24,6 +24,11 @@ class Collection(object):
         """
         check the amount of item the user ask for. if it's grater then the length of the
         iterable it will return all item. if les i will return the amount
+        :exception
+        If the amount bigger take() will return all the iterable
+        If the amount is a negative number smaller then abs of amount take() will return take(-amount)
+        self.iterable[:-amount] return from the end
+        If the amount is a negative number bigger then abs of amount take() will return empty list []
         :param amount: The amount of item the user ask for
         :return: Empty iterable for len less then 0, amount for valid number, all for more then len
         """
@@ -46,14 +51,32 @@ class Collection(object):
         return None if type(elements) in (dict, None) else Collection((list(elements) + self.iterable))
 
     def filter(self, *callbacks):
-        for item in callbacks:
-            self.iterable = filter(item, self.iterable)
-        return Collection(self.iterable)
+        """
+        take the self.iterable and filter with all the functions in callback
+        :param callbacks: function to filter with the function need to be bool
+        :return: new collection with the filter elements
+        """
+        return Collection([item for item in self.iterable if all(fun(item) for fun in callbacks)])
 
     def map(self, *callbacks):
+        """
+        take multi function and computation it on the iterable
+        :param callbacks: functions
+        :return: iterable after apply the callback
+        """
+        temp = self.iterable
         for item in callbacks:
-            self.iterable = map(item, self.iterable)
-        return Collection(self.iterable)
+            temp = map(item, temp)
+        return Collection(temp)
+
+    def reduce(self, callback, initial=0):
+        """
+        performing some computation on a iterable and returning the result.
+        :param callback: function take 2 arguments
+        :param initial: starting computation point
+        :return: result
+        """
+        return [callback(i, initial) for i in self.iterable]
 
     def sort(self, key=None, reversed=False):
         return Collection(sorted(self.iterable, key, reversed))
@@ -97,6 +120,5 @@ class Collection(object):
         for index in range(len(self.iterable)):
             callback(self.iterable[index])
 
-
-c = Collection('HELLO')
-c.tap(print)
+# c = Collection('HELLO')
+# c.tap(print)
