@@ -53,3 +53,12 @@ class CollectionClass(unittest.TestCase):
         self.assertNotEqual(a.iterable, b.iterable)
         self.assertEqual(a.iterable, [1, 2, 3])
         self.assertEqual(b.iterable, ['a', 1, 2, 3])
+
+    def test_map(self):
+        self.assertEqual(solutions.Collection([1, 2, 3]).map(lambda x: x + 2, lambda x: x * x).iterable, [9, 16, 25])
+
+    def test_reduce_add_equal_15(self):
+        self.assertEqual(solutions.Collection([1, 2, 3, 4]).reduce(lambda x, y: x + y, 5), 15)
+
+    def test_reduce_add_equal_10(self):
+        self.assertEqual(solutions.Collection([1, 2, 3, 4]).reduce(lambda x, y: x + y), 10)
