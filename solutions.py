@@ -76,7 +76,10 @@ class Collection(object):
         :param initial: starting computation point
         :return: result
         """
-        return [callback(i, initial) for i in self.iterable]
+        result = initial
+        for num in self.iterable:
+            result = callback(result, num)
+        return result
 
     def sort(self, key=None, reversed=False):
         """
@@ -87,7 +90,9 @@ class Collection(object):
         :param reversed:(Optional) - If true, the sorted list is reversed (or sorted in Descending order)
         :return: A sorted list from the given iterable
         """
-        return Collection(sorted(self.iterable, key, reversed))
+        return Collection(
+            sorted(self.iterable, key=lambda func: func[key], reverse=reversed)) if key is not None else Collection(
+            sorted(self.iterable, key=None, reverse=reversed))
 
     def set(self, position, value):
         """
@@ -96,9 +101,7 @@ class Collection(object):
         :param value:New value
         :return:New Collection if the position is valid else the new Collection with the original iterable
         """
-        temp = self.iterable
-        temp[position] = value
-        return Collection(temp)
+        return Collection(list(self.iterable[:position]) + list(value) + list(self.iterable[position + 1:]))
 
     def pluck(self, key):
         """
@@ -107,50 +110,98 @@ class Collection(object):
         :param key:
         :return: A new Collection with the only the key of each element
         """
-        return Collection(self.iterable.get(key, self.iterable))
+        return Collection(self.iterable) if type(self.iterable) is not type(dict) else Collection(
+            map(lambda func: func[key], self.iterable))
 
     def values(self):
+        """
+        return the elements in the iterable
+        :return: all elements in the iterable else None
+        """
+        return Collection(self.iterable) if type(self.iterable) not in (dict, None) else None
+
+    def unique(self):
+        """
+        should return a new Collection with only unique items.
+        :return: set of all element in the iterable
+        """
+        return Collection(set(self.iterable))
+
+    def tap(self, callback):
+        """
+        should pass each element of the collection by-value to a callback function
+        :param callback: function that given
+        :return:the result for each value
+        """
+        for index in range(len(self.iterable)):
+            callback(self.iterable[index])
+
+    def __getitem__(self, position):
+        """
+
+        :param position:
+        :return:
+        """
+        return self.iterable[position] if position < len(self.iterable) else None
+
+    def __add__(self, other):
+        """
+
+        :param other:
+        :return:
+        """
+        return list(self.iterable) + list(other)
+
+    def __sub__(self, other):
+        """
+
+        :param other:
+        :return:
+        """
+        return list(self.iterable) - list(other)
+
+    def __len__(self):
         """
 
         :return:
         """
-        return Collection([].append(self.iterable))
+        return len(self.iterable)
+
+    def __contains__(self, element):
+        """
+
+        :param element:
+        :return:
+        """
+        return True if element in self.iterable else False
 
     def __eq__(self, other):
+        """
+
+        :param other:
+        :return:
+        """
         return True if self.iterable == other.iterable else False
 
     def __ne__(self, other):
-        return (not (self.__eq__(other)))
+        """
+
+        :param other:
+        :return:
+        """
+        return not (self.__eq__(other))
 
     def __str__(self):
+        """
+
+        :return:
+        """
+
         return 'Collection{}'.format(tuple(self.iterable))
 
     def __repr__(self):
-        return 'Collecton' + (self.__str__())
+        """
 
-    def reduce(self, callback, initial=0):
-        result = initial
-        for num in self.iterable:
-            result = callback(result, num)
-        return (result)
-
-    def sort(self, key=None, reversed=False):
-        return Collection(
-            sorted(self.iterable, key=lambda func: func[key], reverse=reversed)) if key != None else Collection(
-            sorted(self.iterable, key=None, reverse=reversed))
-
-    def pluck(self, key):
-        return Collection(map(lambda func: func[key], self.iterable))
-
-    def values(self):
-        return Collection(self.iterable) if type(iterable) not in (dict, None) else None
-
-    def unique(self):
-        return Collection(set(self.iterable))
-
-    def tap(self, callback):
-        for index in range(len(self.iterable)):
-            callback(self.iterable[index])
-
-# c = Collection('HELLO')
-# c.tap(print)
+        :return:
+        """
+        return 'Collection' + (self.__str__())
