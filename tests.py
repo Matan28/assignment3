@@ -62,3 +62,25 @@ class CollectionClass(unittest.TestCase):
 
     def test_reduce_add_equal_10(self):
         self.assertEqual(solutions.Collection([1, 2, 3, 4]).reduce(lambda x, y: x + y), 10)
+
+    def test_sort_list(self):
+        self.assertEqual(solutions.Collection('HELLO').sort().iterable, ['E', 'H', 'L', 'L', 'O'])
+
+    def test_sort_list_reversed(self):
+        self.assertEqual(solutions.Collection('HELLO').sort(None, True).iterable, ['O', 'L', 'L', 'H', 'E'])
+
+    def test_sort_list_of_dict(self):
+        self.assertEqual(
+            solutions.Collection([{'name': 'Joe', 'age': 20}, {'name': 'Jane', 'age': 13}]).sort('age').iterable,
+            [{'name': 'Jane', 'age': 13}, {'name': 'Joe', 'age': 20}])
+
+    def test_set_position_0(self):
+        self.assertEqual(solutions.Collection('HELLO').set(0, 'h').iterable, ['h','E','L','L','O'])
+
+    def test_dict_keys_age(self):
+        self.assertEqual(solutions.Collection([{'name': 'Joe', 'age': 20},
+                                               {'name': 'Jane', 'age': 13}]).pluck('age').iterable, [20, 13])
+
+    def test_dict_key_name(self):
+        self.assertEqual(solutions.Collection([{'name': 'Joe', 'age': 20},
+                                               {'name': 'Jane', 'age': 13}]).pluck('name').iterable, ['Joe', 'Jane'])
