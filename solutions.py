@@ -79,7 +79,42 @@ class Collection(object):
         return [callback(i, initial) for i in self.iterable]
 
     def sort(self, key=None, reversed=False):
+        """
+        sort the iterable by a key and optional to reversed the iterable
+        :exception if the function get reversed without the key ',' must be sent also, telling the function there
+        is a second parameter.
+        :param key:(Optional) - Function that serves as a key for the sort comparison
+        :param reversed:(Optional) - If true, the sorted list is reversed (or sorted in Descending order)
+        :return: A sorted list from the given iterable
+        """
         return Collection(sorted(self.iterable, key, reversed))
+
+    def set(self, position, value):
+        """
+        set a new value to a position asked. if the position is valid
+        :param position: the place where the new value should be
+        :param value:New value
+        :return:New Collection if the position is valid else the new Collection with the original iterable
+        """
+        temp = self.iterable
+        temp[position] = value
+        return Collection(temp)
+
+    def pluck(self, key):
+        """
+        If the internal elements are not dictionaries, then no action should
+        be taken and a copy of the current collection should be returned
+        :param key:
+        :return: A new Collection with the only the key of each element
+        """
+        return Collection(self.iterable.get(key, self.iterable))
+
+    def values(self):
+        """
+
+        :return:
+        """
+        return Collection([].append(self.iterable))
 
     def __eq__(self, other):
         return True if self.iterable == other.iterable else False
@@ -103,9 +138,6 @@ class Collection(object):
         return Collection(
             sorted(self.iterable, key=lambda func: func[key], reverse=reversed)) if key != None else Collection(
             sorted(self.iterable, key=None, reverse=reversed))
-
-    def set(self, position, value):
-        return Collection(self.iterable[:position] + (value) + self.iterable[position + 1:])
 
     def pluck(self, key):
         return Collection(map(lambda func: func[key], self.iterable))
